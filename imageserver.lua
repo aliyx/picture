@@ -29,7 +29,7 @@ end
 
 
 function file_exists(name)
-	local f=io.open(name,"r")
+	local f = io.open(name,"r")
 	if f~=nil then io.close(f) return true else return false end
 end
 
@@ -38,16 +38,14 @@ local function to_gravity(gravity_str)
 	return _gravity[gravity_str]
 end
 
-local get_tfs_as_blob
 function get_tfs_as_blob(tfsurl, tfsname)
-   local ok, code, headers, status, body  = hc:request { url = tfsurl .. tfsname}
-   if code ~= ngx.HTTP_OK then
-      return nil
-   else
-      return body
+	local ok, code, headers, status, body  = hc:request { url = tfsurl .. tfsname}
+   	if code ~= ngx.HTTP_OK then
+	   return nil
+   	else
+   		return body
    end
 end
-
 
 function get_tfs_as_img(tfsurl, tfsname)
 	if not (tfsname) then
@@ -66,8 +64,13 @@ function get_tfs_as_img(tfsurl, tfsname)
 		img, err, code = magick.load_image_from_blob(blob)
 		if not (img) then
 			return nil, "ivk method[load_image_from_blob] to load image[" .. tfsname 
-					.. "] error, code:" .. code .. " msg:" .. msg 
+				.. "] error, code:" .. code .. " msg:" .. msg 
 		end
+
+		-- strip metadata
+		img:strip()
+		img:set_gravity(to_gravity(ct))
+
 	-- read file from local
 	else 
 		img = magick.load_image(tfsname)
@@ -78,7 +81,6 @@ function get_tfs_as_img(tfsurl, tfsname)
 	
 	return img
 end
-
 
 function get_composite_as_image(url, b_f, c_f, gravity, compositeOp)
 	local gv = to_gravity(gravity)
@@ -103,13 +105,12 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp)
 	if not (ok) then
 		base_img:destroy()
 		change_img:destroy()
-		return nil,  "ivk method[composite_by_gravity] error, code: " .. code .. "msg: " .. msg
+		return nil, "ivk method[composite_by_gravity] error, code: " .. code .. "msg: " .. msg
 	else 
 		-- gc
 		change_img:destroy()
 	end
 	
-	--base_img:strip()
 	return base_img
 end
 
@@ -135,7 +136,8 @@ end
 --- resize image, remove tmp_name source on succeed
 function img_resize(tmp_name, to_name, size_x, size_y)
 	local area = size_x .. "x" .. size_y
-	local command = "gm convert " .. tmp_name.. " -strip -resize " .. area .. " -background white -gravity center -auto-orient " .. to_name 
+	local command = "gm convert " .. tmp_name.. " -strip -resize " .. area .. 
+		" -background white -gravity center -auto-orient " .. to_name 
 	local exec_code = os.execute(command)
 	local ret_val = 0
 	if (exec_code == 0) then
