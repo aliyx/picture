@@ -5,11 +5,16 @@ local ngx = require "ngx"
 local magick = require "magick"
 
 local _gravity = {
-	nw = "NorthWestGravity",
-	ne = "NorthEastGravity",
-	sw = "SouthWestGravity",
-	se = "SouthEastGravity",
-	ct = "CenterGravity"
+    nw = "NorthWestGravity",
+    ne = "NorthEastGravity",
+    sw = "SouthWestGravity",
+    se = "SouthEastGravity",
+    ct = "CenterGravity",
+	n = "NorthGravity",
+	s = "SouthGravity",
+	w = "WestGravity",
+	e = "EastGravity"
+
 }
 
 local hc = http.new()
