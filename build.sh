@@ -8,6 +8,7 @@ TFS_SERVER=
 REDIS_SERVER=
 REDIS_SERVER_DUBBO_WRITE=
 HTTP_SERVER=
+HTTP_PORT=10502
 
 #inet addr:ip
 ip_command=`ifconfig eth0 | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
@@ -40,10 +41,16 @@ if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" -o -z "$REDIS_SERVER_DUBBO_WRITE" ];
     exit
 fi
 
+#set lua_package_path
+sed -ri "s/(.*)lua_package_path(.*)\?\.(.*)/\1lua_package_path: \"\/var\/wd\/wrs\/webroot\/picture\/?.\3/g" nginx.conf
+
+# set http port
+sed -ri "s/(.*)listen\s+80/\1listen $HTTP_PORT/g" nginx.conf
+
 ##According to port match
 
 #redis server
-sed -ri "s/(.*)server\s*(([0-9]+\.){3}[0-9]+):10388(.*)/\1server $REDIS_SERVER\4;/g" nginx.conf
+sed -ri "s/(.*)server\s*(([0-9]+\.){3}[0-9]+):10388(.*)/\1server $REDIS_SERVER\4/g" nginx.conf
 
 #tfs server
 sed -ri "s/(.*)server\s*(([0-9]+\.){3}[0-9]+):11100/\1server $TFS_SERVER/g" nginx.conf
