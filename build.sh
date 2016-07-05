@@ -42,7 +42,7 @@ if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" -o -z "$REDIS_SERVER_DUBBO_WRITE" ];
 fi
 
 #set lua_package_path
-sed -ri "s/(.*)lua_package_path(.*)\?\.(.*)/\1lua_package_path: \"\/var\/wd\/wrs\/webroot\/picture\/?.\3/g" nginx.conf
+sed -ri "s/(.*)lua_package_path(.*)\?\.(.*)/\1lua_package_path \"\/var\/wd\/wrs\/webroot\/picture\/?.\3/g" nginx.conf
 
 # set http port
 sed -ri "s/(.*)listen\s+80/\1listen $HTTP_PORT/g" nginx.conf

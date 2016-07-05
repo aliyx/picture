@@ -69,12 +69,12 @@ function get_tfs_as_img(tfsurl, tfsname)
         img, err, code = magick.load_image_from_blob(blob)
         if not (img) then
             return nil, "ivk method[load_image_from_blob] to load image[" .. tfsname 
-                .. "] error, code:" .. code .. " msg:" .. msg 
+                .. "] error, code:" .. code .. " msg:" .. err 
         end
 
         -- strip metadata
         img:strip()
-        img:set_gravity(to_gravity(ct))
+        img:set_gravity(to_gravity("ct"))
 
     -- read file from local
     else 
@@ -101,8 +101,8 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp)
     end
 	
     change_img, err = get_tfs_as_img(url .. "/", c_f)
-    if not (base_img) then
-        base_img:destroy()
+    if not (change_img) then
+        base_img:destroy()  
         return nil, err
     end
    	
