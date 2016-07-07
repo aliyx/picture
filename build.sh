@@ -16,7 +16,7 @@ HTTP_SERVER=`echo $ip_command`
 
 #inet ip
 if [ -z "$HTTP_SERVER" ]; then
-    ip_command=`ifconfig eth0 | grep 'inet' | awk '{ print $2}'`
+    ip_command=`ifconfig eth0 | grep 'inet ' | awk '{ print $2}'`
     HTTP_SERVER=`echo $ip_command`
 fi
 

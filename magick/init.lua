@@ -169,7 +169,7 @@ try_to_load = function(...)
   end
   return error("Failed to load ImageMagick (" .. tostring(...) .. ")")
 end
-local lib = try_to_load("MagickWand.x", function()
+local lib = try_to_load("MagickWand", function()
   local lname = get_flags():match("-l(MagickWand[^%s]*)")
   local suffix
   if ffi.os == "OSX" then
