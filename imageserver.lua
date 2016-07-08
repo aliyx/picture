@@ -52,7 +52,7 @@ function get_tfs_as_blob(tfsurl, tfsname)
     end
 end
 
-function get_tfs_as_img(tfsurl, tfsname)
+function get_tfs_as_img(tfsurl, tfsname, watch)
     if not (tfsname) then
         return nil, "file can't be nil"
     end
@@ -62,9 +62,20 @@ function get_tfs_as_img(tfsurl, tfsname)
 	
     -- read file from tfs
     if not (_local) then 
+
+        if (watch) then
+            watch:start("get_tfs_as_blob:" .. tfsname)
+        end
         local blob = get_tfs_as_blob(tfsurl .. "/", tfsname)
         if not (blob) then
             return nil, "can't get image[" .. tfsname .."] from tfs!"
+        end
+        if (watch) then
+            watch:stop()
+        end
+
+        if (watch) then
+            watch:start("load_image_from_blob")
         end
         img, err, code = magick.load_image_from_blob(blob)
         if not (img) then
@@ -75,6 +86,9 @@ function get_tfs_as_img(tfsurl, tfsname)
         -- strip metadata
         img:strip()
         img:set_gravity(to_gravity("ct"))
+        if (watch) then
+            watch:stop()
+        end
 
     -- read file from local
     else 
@@ -87,25 +101,32 @@ function get_tfs_as_img(tfsurl, tfsname)
     return img
 end
 
-function get_composite_as_image(url, b_f, c_f, gravity, compositeOp)
+function get_composite_as_image(url, b_f, c_f, gravity, compositeOp, watch)
     local gv = to_gravity(gravity)
     if not (gv) then
         return nil, "invalid gravity type"
     end
 	
+    -- get based image from tfs
+
     local base_img, change_img, err
-	
-    base_img, err = get_tfs_as_img(url .. "/", b_f)
+    base_img, err = get_tfs_as_img(url .. "/", b_f, watch)
     if not (base_img) then
         return nil, err
     end
-	
-    change_img, err = get_tfs_as_img(url .. "/", c_f)
+
+    -- get changed image from tfs
+    change_img, err = get_tfs_as_img(url .. "/", c_f, watch)
     if not (change_img) then
         base_img:destroy()  
         return nil, err
     end
-   	
+  
+    -- composite
+
+    if (watch) then
+        watch:start("composite")
+    end
     local ok, msg, code = base_img:composite_by_gravity(change_img, gv, compositeOp)
     if not (ok) then
         base_img:destroy()
@@ -115,7 +136,10 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp)
         -- gc
         change_img:destroy()
     end
-	
+	if (watch) then
+        watch:stop()
+    end
+
     return base_img
 end
 
