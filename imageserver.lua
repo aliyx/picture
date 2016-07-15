@@ -14,8 +14,9 @@ local _gravity = {
     s = "SouthGravity",
     w = "WestGravity",
     e = "EastGravity"
-
 }
+-- keepalive for tfs
+local TFS_KEEPALIVE_TIMEOUT = 300
 
 local hc = http.new()
 
@@ -44,9 +45,11 @@ local function to_gravity(gravity_str)
 end
 
 function get_tfs_as_blob(tfsurl, tfsname)
-    local ok, code, headers, status, body  = hc:request { url = tfsurl .. tfsname}
+    -- default keepalive for tfs
+    local ok, code, headers, status, body  = hc:request { 
+            url = tfsurl .. tfsname, keepalive = TFS_KEEPALIVE_TIMEOUT}
     if code ~= ngx.HTTP_OK then
-        return nil
+        return nil, code
     else
         return body
     end
@@ -66,9 +69,10 @@ function get_tfs_as_img(tfsurl, tfsname, watch)
         if (watch) then
             watch:start("get_tfs_as_blob:" .. tfsname)
         end
-        local blob = get_tfs_as_blob(tfsurl .. "/", tfsname)
+        local blob, err = get_tfs_as_blob(tfsurl .. "/", tfsname)
         if not (blob) then
-            return nil, "can't get image[" .. tfsname .."] from tfs!"
+            return nil, "can't get image[" .. tfsname .. 
+                "] from tfs, Caused by: " .. err
         end
         if (watch) then
             watch:stop()
@@ -82,13 +86,16 @@ function get_tfs_as_img(tfsurl, tfsname, watch)
             return nil, "ivk method[load_image_from_blob] to load image[" .. tfsname 
                 .. "] error, code:" .. code .. " msg:" .. err 
         end
+        if (watch) then
+            watch:stop()
+        end
+        if (watch) then
+            watch:stop()
+        end
 
         -- strip metadata
         img:strip()
         img:set_gravity(to_gravity("ct"))
-        if (watch) then
-            watch:stop()
-        end
 
     -- read file from local
     else 
@@ -145,10 +152,10 @@ end
 
 
 function get_tfs_as_file(tfsurl, tfsname, suffix)
-    local body  = get_tfs_as_blob(tfsurl, tfsname)
+    local body, err  = get_tfs_as_blob(tfsurl, tfsname)
     local tmp_name = nil
     if not (body) then
-        return nil
+        return nil, err
     else
         local suf = suffix
         if (suffix == nil) then

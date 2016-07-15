@@ -293,24 +293,24 @@ function request(self, reqt)
     for i, v in pairs(nreqt.headers) do
         -- fix cookie is a table value
         if type(v) == "table" then
-                if i == "cookie" then
-                                v = table.concat(v, "; ")
-                        else
-                                v = table.concat(v, ", ")
-                        end
+            if i == "cookie" then
+                v = table.concat(v, "; ")
+            else
+                v = table.concat(v, ", ")
+            end
         end
         h = i .. ": " .. v .. "\r\n" .. h
     end
 
     h = h .. '\r\n' -- close headers
 
-        -- @modify: add ssl support
-        if nreqt.scheme == 'https' then
-                local sess, err = sock:sslhandshake();
-                if err then
-                        return nil, err;
-                end
+    -- @modify: add ssl support
+    if nreqt.scheme == 'https' then
+        local sess, err = sock:sslhandshake();
+        if err then
+            return nil, err;
         end
+    end
 
     bytes, err = sock:send(reqline .. h)
     if err then
@@ -390,9 +390,16 @@ function request(self, reqt)
             return nil, "read body failed " .. err
         end
     end
-
+    
+    -- read CR LF or LF otherwise not setkeepalive success
+    repeat
+        local ok, err = sock:receive()
+    until  ok ~= nil
     if nreqt.keepalive then
-        sock:setkeepalive(nreqt.keepalive)
+        local ok, err = sock:setkeepalive(nreqt.keepalive)
+        if not ok then
+            return nil, "failed to set keepalive: " .. err
+        end
     else
         sock:close()
     end
