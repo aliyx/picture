@@ -29,7 +29,6 @@ local mt = { __index = resty.http }
 local tcp = ngx.socket.tcp
 local base64 = ngx.encode_base64
 
-
 local function adjusturi(reqt)
     local u = reqt
     -- if there is a proxy, we need the full url. otherwise, just a part.
@@ -398,7 +397,8 @@ function request(self, reqt)
     if nreqt.keepalive then
         local ok, err = sock:setkeepalive(nreqt.keepalive)
         if not ok then
-            return nil, "failed to set keepalive: " .. err
+            --return nil, "failed to set keepalive: " .. err
+            ngx.log(ngx.WARN, "failed to set keepalive: " .. err)
         end
     else
         sock:close()
