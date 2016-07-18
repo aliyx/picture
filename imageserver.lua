@@ -89,9 +89,6 @@ function get_tfs_as_img(tfsurl, tfsname, watch)
         if (watch) then
             watch:stop()
         end
-        if (watch) then
-            watch:stop()
-        end
 
         -- strip metadata
         img:strip()

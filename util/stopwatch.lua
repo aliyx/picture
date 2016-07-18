@@ -36,7 +36,7 @@ end
 
 function stop(self)
     if not (self.running) then
-        error("Can't start StopWatch: it's already running")
+        error("Can't stop StopWatch: it's already running")
     end
     self.taskCount = self.taskCount + 1
     local lastTime = time.get_time_ms() - self.startTimeMillis
