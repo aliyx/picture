@@ -17,6 +17,7 @@ local _gravity = {
 }
 -- keepalive for tfs
 local TFS_KEEPALIVE_TIMEOUT = 300
+local TFS_TIMEOUT = 10000
 
 local hc = http.new()
 
@@ -47,7 +48,7 @@ end
 function get_tfs_as_blob(tfsurl, tfsname)
     -- default keepalive for tfs
     local ok, code, headers, status, body  = hc:request { 
-            url = tfsurl .. tfsname, keepalive = TFS_KEEPALIVE_TIMEOUT}
+            url = tfsurl .. tfsname, keepalive = TFS_KEEPALIVE_TIMEOUT, timeout = TFS_TIMEOUT}
     if code ~= ngx.HTTP_OK then
         return nil, code
     else

@@ -647,6 +647,7 @@ thumb = function(img, size_str, output)
   return ret
 end
 return {
+  lib = lib,
   load_image = load_image,
   load_image_from_blob = load_image_from_blob,
   thumb = thumb,

@@ -391,13 +391,10 @@ function request(self, reqt)
     end
     
     -- read CR LF or LF otherwise not setkeepalive success
-    repeat
-        local ok, err = sock:receive()
-    until  ok ~= nil
+    sock:receive("*l")
     if nreqt.keepalive then
         local ok, err = sock:setkeepalive(nreqt.keepalive)
         if not ok then
-            --return nil, "failed to set keepalive: " .. err
             ngx.log(ngx.WARN, "failed to set keepalive: " .. err)
         end
     else
