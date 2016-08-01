@@ -1,6 +1,7 @@
 #!/bin/bash
-if [ $1 == "local" -a $1 == "sit" -a $1 == "pre" -a $1 == "prod" ]; then
-    echo "Invalid environment: $1"
+if [ "X$1" != "Xlocal" -a "X$1" != "Xtest" -a "X$1" != "Xsit" -a "X$1" != "Xprod" ]; then
+    echo "Please select env: local test sit prod"
+    echo "Such as ./configure sit"
     exit
 fi
 
@@ -9,6 +10,11 @@ REDIS_SERVER=
 REDIS_SERVER_DUBBO_WRITE=
 HTTP_SERVER=
 HTTP_PORT=10502
+CPU=
+
+#cpu count
+ip_command=`cat /proc/cpuinfo | grep processor | wc -l`
+CPU=`echo $ip_command`
 
 #inet addr:ip
 ip_command=`ifconfig eth0 | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
@@ -41,6 +47,9 @@ if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" -o -z "$REDIS_SERVER_DUBBO_WRITE" ];
     exit
 fi
 
+# set worker_processes
+sed -ri "s/(.*)worker_processes\s+([0-9]+)/\1worker_processes  $CPU/g" nginx.conf
+
 #set lua_package_path
 sed -ri "s/(.*)lua_package_path(.*)\?\.(.*)/\1lua_package_path \"\/var\/wd\/wrs\/webroot\/picture\/?.\3/g" nginx.conf
 
@@ -61,8 +70,63 @@ sed -ri "s/(.*)server_name\s*(([0-9]+\.){3}[0-9]+).*/\1server_name $HTTP_SERVER;
 #redis double write server
 sed -ri "s/(.*)redis2_pass\s*(([0-9]+\.){3}[0-9]+):16379(.*)/\1redis2_pass $REDIS_SERVER_DUBBO_WRITE\4/g" nginx.conf
 
+#---------test----------
+sed -ri "s/(.*)IP\s=(.*)/\1IP = '$HTTP_SERVER:10502'/g" tests/img.py
+
 
 echo "tfs_server: $TFS_SERVER"
 echo "redis_server: $REDIS_SERVER"
 echo "redis_server_dubbo_write: $REDIS_SERVER_DUBBO_WRITE"
 echo "http_server: $HTTP_SERVER"
+echo "worker_processes: $CPU"
+
+echo "Starting make ..."
+
+# back nginx.conf
+DATE=$(date +%m%d%H%M)
+if [ -f /usr/local/tengine/conf/nginx.conf ]; then
+    cp /usr/local/tengine/conf/nginx.conf /usr/local/tengine/conf/nginx.${DATE}
+    echo "Back-up /usr/local/tengine/conf/nginx.conf to /usr/local/tengine/conf/nginx.${DATE}"
+fi
+py=""
+
+if type py 2>/dev/null; then
+    py="py"
+elif type python 2>/dev/null; then
+    py="python"
+else
+    echo >&2 "Require python but it's not installed.  Aborting."
+    exit 1
+fi
+
+PIC_MAKEFILE=./Makefile
+
+echo "creating $PIC_MAKEFILE"
+cat << END                                                     > $PIC_MAKEFILE
+
+all :
+	@echo "Please input make install..."
+
+install : nginx.conf
+	mv /usr/local/tengine/conf/nginx.conf  /usr/local/tengine/conf/nginx.bak
+	cp nginx.conf /usr/local/tengine/conf/
+
+nginx.conf :
+
+test : tests/b.jpg tests/c.png tests/img.py tests/constants.py
+	$py tests/img.py
+
+tests/b.jpg :
+
+tests/c.png :
+
+tests/img.py :
+
+tests/constants.py :
+
+clean :
+	mv /usr/local/tengine/conf/nginx.bak /usr/local/tengine/conf/nginx.conf
+
+.PHONY: all install test clean
+
+END
