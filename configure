@@ -15,6 +15,9 @@ CPU=
 #cpu count
 ip_command=`cat /proc/cpuinfo | grep processor | wc -l`
 CPU=`echo $ip_command`
+if [ $CPU -gt 16 ]; then
+    CPU = 16
+fi
 
 #inet addr:ip
 ip_command=`ifconfig eth0 | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
@@ -37,9 +40,17 @@ if [ $1 == "local" -o $1 == "sit" ]; then
     REDIS_SERVER="10.213.33.155:10388"
     REDIS_SERVER_DUBBO_WRITE="10.77.135.117:16379"
 fi
-
-if [ $1 == "pre" ]; then
-    echo "unknow"    
+# test
+if [ $1 == "local" -o $1 == "sit" ]; then   
+    TFS_SERVER="10.213.33.177:11100"
+    REDIS_SERVER="10.213.33.155:10388"
+    REDIS_SERVER_DUBBO_WRITE="10.77.135.117:16379"
+fi
+# prod
+if [ $1 == "prod" ]; then
+    TFS_SERVER="10.209.18.2:11100"
+    REDIS_SERVER="10.209.33.19:10388"
+    REDIS_SERVER_DUBBO_WRITE="10.209.18.61:16379"   
 fi
 
 if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" -o -z "$REDIS_SERVER_DUBBO_WRITE" ]; then
@@ -109,12 +120,14 @@ all :
 
 install : nginx.conf
 	mv /usr/local/tengine/conf/nginx.conf  /usr/local/tengine/conf/nginx.bak
-	cp nginx.conf /usr/local/tengine/conf/
+	install -c -m 644 nginx.conf /usr/local/tengine/conf/
+	chmod 755 ./tests/img.py
+	chmod 755 ./nginx_log_roll
 
 nginx.conf :
 
 test : tests/b.jpg tests/c.png tests/img.py tests/constants.py
-	$py tests/img.py
+	./tests/img.py
 
 tests/b.jpg :
 

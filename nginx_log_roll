@@ -1,0 +1,14 @@
+#!/bin/bash
+logs_path="/usr/local/tengine/logs/"
+access="access"   
+error="error"
+
+pid_path="/${logs_path}nginx.pid"
+
+mv ${logs_path}${access}.log ${logs_path}${access}_$(date +%Y%m%d).log
+mv ${logs_path}${error}.log ${logs_path}${error}_$(date +%Y%m%d).log
+
+kill -USR1 `cat ${pid_path}`
+
+# crontab  -e
+# * 01 * * 1 /var/wd/wrs/webroot/picture/nginx_log_roll

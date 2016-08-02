@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python3
 # coding=utf-8
 import http.client, urllib.parse, urllib.request
 import os, sys, time
