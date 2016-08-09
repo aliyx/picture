@@ -81,6 +81,9 @@ sed -ri "s/(.*)server_name\s*(([0-9]+\.){3}[0-9]+).*/\1server_name $HTTP_SERVER;
 #redis double write server
 sed -ri "s/(.*)redis2_pass\s*(([0-9]+\.){3}[0-9]+):16379(.*)/\1redis2_pass $REDIS_SERVER_DUBBO_WRITE\4/g" nginx.conf
 
+# forbidden
+sed -ri "s/(.*)$remote_addr = (([0-9]+\.){3}[0-9]+)(.*)/\1$remote_addr = $HTTP_SERVER\4/g" nginx.conf
+
 #---------test----------
 sed -ri "s/(.*)IP\s=(.*)/\1IP = '$HTTP_SERVER:10502'/g" tests/img.py
 
