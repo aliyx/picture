@@ -5,8 +5,8 @@ error="error"
 
 pid_path="/${logs_path}nginx.pid"
 
-mv ${logs_path}${access}.log ${logs_path}${access}_$(date +%Y%m%d).log
-mv ${logs_path}${error}.log ${logs_path}${error}_$(date +%Y%m%d).log
+mv ${logs_path}${access}.log ${logs_path}${access}.log.$(date +%Y%m%d)
+mv ${logs_path}${error}.log ${logs_path}${error}.log.$(date +%Y%m%d)
 
 kill -USR1 `cat ${pid_path}`
 
