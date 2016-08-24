@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 # coding=utf-8
 import http.client, urllib.parse, urllib.request
 import os, sys, time
@@ -27,6 +27,7 @@ class Img:
 
         assert f.status == 200 , "upload image: " + img_path
         id = str(f.read(), encoding = 'utf-8')
+        f.close()
         print (id)
         return id
 

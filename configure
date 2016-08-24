@@ -7,7 +7,6 @@ fi
 
 TFS_SERVER=
 REDIS_SERVER=
-REDIS_SERVER_DUBBO_WRITE=
 HTTP_SERVER=
 HTTP_PORT=10502
 CPU=
@@ -50,22 +49,19 @@ fi
 if [ $1 == "local" -o $1 == "sit" ]; then   
     TFS_SERVER="10.213.33.177:11100"
     REDIS_SERVER="10.213.33.155:10388"
-    REDIS_SERVER_DUBBO_WRITE="10.77.135.117:16379"
 fi
 # test
 if [ $1 == "local" -o $1 == "sit" ]; then   
     TFS_SERVER="10.213.33.177:11100"
     REDIS_SERVER="10.213.33.155:10388"
-    REDIS_SERVER_DUBBO_WRITE="10.77.135.117:16379"
 fi
 # prod
 if [ $1 == "prod" ]; then
     TFS_SERVER="10.209.18.2:11100"
     REDIS_SERVER="10.209.33.19:10388"
-    REDIS_SERVER_DUBBO_WRITE="10.209.18.61:16379"   
 fi
 
-if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" -o -z "$REDIS_SERVER_DUBBO_WRITE" ]; then
+if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" ]; then
     echo "Invalid environment: $1"
     exit
 fi
@@ -90,19 +86,12 @@ sed -ri "s/(.*)server\s*(([0-9]+\.){3}[0-9]+):11100/\1server $TFS_SERVER/g" ngin
 #http server
 sed -ri "s/(.*)server_name\s*(([0-9]+\.){3}[0-9]+).*/\1server_name $HTTP_SERVER;/g" nginx.conf
 
-#redis double write server
-sed -ri "s/(.*)redis2_pass\s*(([0-9]+\.){3}[0-9]+):16379(.*)/\1redis2_pass $REDIS_SERVER_DUBBO_WRITE\4/g" nginx.conf
-
-# forbidden
-sed -ri "s/(.*)$remote_addr = (([0-9]+\.){3}[0-9]+)(.*)/\1$remote_addr = $HTTP_SERVER\4/g" nginx.conf
-
 #---------test----------
 sed -ri "s/(.*)IP\s=(.*)/\1IP = '$HTTP_SERVER:10502'/g" tests/img.py
 
 
 echo "tfs_server: $TFS_SERVER"
 echo "redis_server: $REDIS_SERVER"
-echo "redis_server_dubbo_write: $REDIS_SERVER_DUBBO_WRITE"
 echo "http_server: $HTTP_SERVER"
 echo "worker_processes: $CPU"
 
@@ -116,13 +105,12 @@ if [ -f /usr/local/tengine/conf/nginx.conf ]; then
 fi
 py=""
 
-if type py 2>/dev/null; then
-    py="py"
-elif type python 2>/dev/null; then
-    py="python"
+if type py3 2>/dev/null; then
+    py="py3"
+elif type python3 2>/dev/null; then
+    py="python3"
 else
-    echo >&2 "Require python but it's not installed.  Aborting."
-    exit 1
+    echo >&2 "Require python but it's not installed."
 fi
 
 PIC_MAKEFILE=./Makefile
@@ -141,7 +129,7 @@ install : nginx.conf
 
 nginx.conf :
 
-test : tests/b.jpg tests/c.png tests/img.py tests/constants.py
+test : tests/b.jpg tests/c.png tests/img.py
 	./tests/img.py
 
 tests/b.jpg :
@@ -149,8 +137,6 @@ tests/b.jpg :
 tests/c.png :
 
 tests/img.py :
-
-tests/constants.py :
 
 clean :
 	mv /usr/local/tengine/conf/nginx.bak /usr/local/tengine/conf/nginx.conf
