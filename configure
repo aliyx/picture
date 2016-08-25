@@ -17,7 +17,7 @@ CPU=`echo $ip_command`
 if [ $CPU -gt 16 ]; then
     CPU=16
 fi
-echo "Checking cpu count...  $CPU"
+echo "Checking for cpu count...  $CPU"
 if [ "X$CPU" == "X0" ]; then
     echo "Error: can't get cpu count!"
     exit
@@ -39,7 +39,7 @@ if [ "X$HTTP_SERVER" == "X" ]; then
         HTTP_SERVER=`echo $ip_command`
     fi
 fi
-echo "Checking local ip...  $HTTP_SERVER"
+echo "Checking for local ip...  $HTTP_SERVER"
 if [ "X$HTTP_SERVER" == "X" ]; then
     echo "Error: can't get local ip!"
     exit
@@ -66,6 +66,10 @@ if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" ]; then
     exit
 fi
 
+echo "Checking for tfs server... $TFS_SERVER"
+echo "Checking for redis server... $REDIS_SERVER"
+echo "Checking for worker processes... $CPU"
+
 # set worker_processes
 sed -ri "s/(.*)worker_processes\s+([0-9]+)/\1worker_processes  $CPU/g" nginx.conf
 
@@ -88,12 +92,6 @@ sed -ri "s/(.*)server_name\s*(([0-9]+\.){3}[0-9]+).*/\1server_name $HTTP_SERVER;
 
 #---------test----------
 sed -ri "s/(.*)IP\s=(.*)/\1IP = '$HTTP_SERVER:10502'/g" tests/img.py
-
-
-echo "tfs_server: $TFS_SERVER"
-echo "redis_server: $REDIS_SERVER"
-echo "http_server: $HTTP_SERVER"
-echo "worker_processes: $CPU"
 
 echo "Starting make ..."
 

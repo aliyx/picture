@@ -201,6 +201,8 @@ local function receivebody(sock, headers, nreqt)
                 return nil,err
             else
                 if data == "0" then
+                    -- read CR LF or LF otherwise not setkeepalive success
+                    sock:receive("*l")
                     return body -- end of chunk
                 else
                     local length = tonumber(data, 16)
@@ -390,8 +392,6 @@ function request(self, reqt)
         end
     end
     
-    -- read CR LF or LF otherwise not setkeepalive success
-    sock:receive("*l")
     if nreqt.keepalive then
         local ok, err = sock:setkeepalive(nreqt.keepalive)
         if not ok then
