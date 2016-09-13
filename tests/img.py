@@ -69,7 +69,7 @@ c_img = img.post(c_path)
 # get
 urls = []
 #= /tfs/favicon.ico
-urls.append('/tfs/favicon.ico')
+#urls.append('/tfs/favicon.ico')
 
 #~ "^/(.*)/label_(\d+)_(T[^/]{17,50})$"
 urls.append('/tfs/label_1_' + b_img)
