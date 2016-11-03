@@ -3,6 +3,7 @@ local VERSION = '0.02'
 local http = require "resty.http"
 local ngx = require "ngx"
 local magick = require "magick"
+local i_util = require "magick.thumb"
 
 local _gravity = {
     nw = "NorthWestGravity",
@@ -127,6 +128,19 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp, watch)
         return nil, err
     end
   
+    -- Temporary processing label for 11.11
+    local _local = string.match(c_f, "^%/")
+    if _local then
+        local w, h = i_util.parse_geometry(
+            "640x640", 
+            base_img:get_width(), base_img:get_height())
+        if not (w) then
+            return nil, "can't get width."
+        else 
+            base_img:resize(w, h)
+        end
+    end
+
     -- composite
 
     if (watch) then
