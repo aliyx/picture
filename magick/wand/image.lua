@@ -4,10 +4,10 @@ do
   local _obj_0 = require("magick.wand.lib")
   lib, can_resize, get_filter = _obj_0.lib, _obj_0.can_resize, _obj_0.get_filter
 end
-local composite_operators, gravity, orientation, interlace
+local composite_operators, gravity, orientation, interlace, colorspace_types
 do
   local _obj_0 = require("magick.wand.data")
-  composite_operators, gravity, orientation, interlace = _obj_0.composite_operators, _obj_0.gravity, _obj_0.orientation, _obj_0.interlace
+  composite_operators, gravity, orientation, interlace, colorspace_types =    _obj_0.composite_operators, _obj_0.gravity, _obj_0.orientation, _obj_0.interlace, _obj_0.colorspace_types
 end
 local get_exception
 get_exception = function(wand)
@@ -156,7 +156,8 @@ do
       op = assert(composite_operators:to_int(op), "invalid operator type")
       return handle_result(self, lib.MagickCompositeImage(self.wand, blob, op, x, y))
     end,
-    --added by yangx
+
+    --added by yangx-----------
     composite_by_gravity = function(self, blob, gtype, op)
       if op == nil then
         op = "OverCompositeOp"
@@ -177,6 +178,18 @@ do
         self:set_format("webp")
       end
     end,
+    transform_colorspace = function(self, ct)
+      ct = assert(colorspace_types:to_int(ct), "invalid colorspace type")
+      return handle_result(self, lib.MagickTransformImageColorspace(self.wand, ct))
+    end,
+    set_colorspace = function(self, ct)
+      ct = assert(colorspace_types:to_int(ct), "invalid colorspace type")
+      return handle_result(self, lib.MagickSetImageColorspace(self.wand, ct))
+    end,
+    get_colorspace = function(self)
+      return colorspace_types:to_str(lib.MagickGetImageColorspace(self.wand))
+    end,
+    ----------------------
     get_blob = function(self)
       local len = ffi.new("size_t[1]", 0)
       local blob = ffi.gc(lib.MagickGetImageBlob(self.wand, len), lib.MagickRelinquishMemory)

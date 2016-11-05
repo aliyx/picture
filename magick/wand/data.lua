@@ -111,9 +111,46 @@ local interlace = enum({
   "JPEGInterlace",
   "PNGInterlace"
 })
+-- added by yangx
+local colorspace_types = enum({
+  [0] = "UndefinedColorspace",
+  "CMYColorspace",        
+  "CMYKColorspace",      
+  "GRAYColorspace",       
+  "HCLColorspace",
+  "HCLpColorspace",
+  "HSBColorspace",
+  "HSIColorspace",
+  "HSLColorspace",
+  "HSVColorspace",          
+  "HWBColorspace",
+  "LabColorspace",
+  "LCHColorspace",          
+  "LCHabColorspace",         
+  "LCHuvColorspace",         
+  "LogColorspace",
+  "LMSColorspace",
+  "LuvColorspace",
+  "OHTAColorspace",
+  "Rec601YCbCrColorspace",
+  "Rec709YCbCrColorspace",
+  "RGBColorspace",           
+  "scRGBColorspace",        
+  "sRGBColorspace",          
+  "TransparentColorspace",
+  "xyYColorspace",
+  "XYZColorspace",          
+  "YCbCrColorspace",
+  "YCCColorspace",
+  "YDbDrColorspace",
+  "YIQColorspace",
+  "YPbPrColorspace",
+  "YUVColorspace"
+})
 return {
   composite_operators = composite_operators,
   gravity = gravity,
   orientation = orientation,
-  interlace = interlace
+  interlace = interlace,
+  colorspace_types = colorspace_types
 }

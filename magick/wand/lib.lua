@@ -10,9 +10,11 @@ ffi.cdef([[  typedef void MagickWand;
   typedef int GravityType;
   typedef int OrientationType;
   typedef int InterlaceType;
+  typedef int ExceptionType;
 
   // added by yangx
   typedef unsigned int MagickStatusType;
+  typedef int ColorspaceType;
   typedef enum
   {
   MagickFalse = 0,
@@ -122,6 +124,10 @@ ffi.cdef([[  typedef void MagickWand;
   MagickBooleanType IsGeometry(const char *geometry);
     MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
         ssize_t *y,size_t *width,size_t *height);
+
+  ColorspaceType MagickGetImageColorspace(MagickWand *);
+  MagickBooleanType MagickSetImageColorspace(MagickWand *,const ColorspaceType);
+  MagickBooleanType MagickTransformImageColorspace(MagickWand *,const ColorspaceType);
 ]])
 local get_flags
 get_flags = function()

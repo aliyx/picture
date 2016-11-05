@@ -137,6 +137,11 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp, watch)
         if not (w) then
             return nil, "can't get width."
         else 
+            ngx.log(ngx.ERR, base_img:get_colorspace() .. "~~" .. change_img:get_colorspace())
+            local ct = base_img:get_colorspace()
+            if ct == "CMYKColorspace" or ct == "CMYColorspace" then
+                base_img:transform_colorspace("RGBColorspace")
+            end
             base_img:resize(w, h)
         end
     end
