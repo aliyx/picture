@@ -173,9 +173,8 @@ do
       if _q ~= nil and _q ~= "" then
         self:set_quality(tonumber(_q))
       end
-      --img:set_option("webp", "lossless", "0")
-      if _wp == "webp" then
-        self:set_format("webp")
+      if _wp ~= nil and _wp ~= "" then
+        self:set_format(_wp)
       end
     end,
     transform_colorspace = function(self, ct)
@@ -188,6 +187,18 @@ do
     end,
     get_colorspace = function(self)
       return colorspace_types:to_str(lib.MagickGetImageColorspace(self.wand))
+    end,
+    get_minitype = function(self)
+      local f = self:get_format()
+      if f:match("flif") or f:match("gif") 
+        or f:match("jp2") or f:match("jpeg") or f:match("jpg") 
+        or f:match("png") or f:match("webp") or f:match("tiff") then
+        return "image/" .. f
+      elseif f:match("json") or f:match("pdf") then
+        return "application/" .. f
+      else
+        return nil
+      end
     end,
     ----------------------
     get_blob = function(self)
