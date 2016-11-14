@@ -1,5 +1,5 @@
 local VERSION = '0.02'
-	
+    
 local http = require "resty.http"
 local ngx = require "ngx"
 local magick = require "magick"
@@ -20,6 +20,8 @@ local _gravity = {
 local TFS_KEEPALIVE_TIMEOUT = 300
 local TFS_TIMEOUT = 10000
 
+local CACHE_SRC = "/usr/local/tfsimage/i1/"
+
 local hc = http.new()
 
 function get_tfsname(h00_name)
@@ -37,7 +39,10 @@ end
 
 
 function file_exists(name)
-    local f = io.open(name,"r")
+    if name == nil or name == '' then
+        return false
+    end
+    local f = io.open(name, "r")
     if f~=nil then io.close(f) return true else return false end
 end
 
@@ -57,14 +62,24 @@ function get_tfs_as_blob(tfsurl, tfsname)
     end
 end
 
+function get_cache_as_img(tfsurl, tfsname, watch)
+    local src = CACHE_SRC .. tfsname
+    if file_exists(src) then
+        return get_tfs_as_img(nil, src)
+    else
+        return get_tfs_as_img(tfsurl, tfsname, watch)
+    end
+
+end
+
 function get_tfs_as_img(tfsurl, tfsname, watch)
     if not (tfsname) then
         return nil, "file can't be nil"
     end
-	
+    
     local img, err, code
     local _local = string.match(tfsname, "^%/")
-	
+    
     -- read file from tfs
     if not (_local) then 
 
@@ -103,7 +118,7 @@ function get_tfs_as_img(tfsurl, tfsname, watch)
             return nil, "can't get image[" .. tfsname .."] from local!"
         end
     end
-	
+    
     return img
 end
 
@@ -112,17 +127,17 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp, watch)
     if not (gv) then
         return nil, "invalid gravity type"
     end
-	
+    
     -- get based image from tfs
 
     local base_img, change_img, err
-    base_img, err = get_tfs_as_img(url .. "/", b_f, watch)
+    base_img, err = get_cache_as_img(url .. "/", b_f, watch)
     if not (base_img) then
         return nil, err
     end
 
     -- get changed image from tfs
-    change_img, err = get_tfs_as_img(url .. "/", c_f, watch)
+    change_img, err = get_cache_as_img(url .. "/", c_f, watch)
     if not (change_img) then
         base_img:destroy()  
         return nil, err
@@ -160,7 +175,7 @@ function get_composite_as_image(url, b_f, c_f, gravity, compositeOp, watch)
         -- gc
         change_img:destroy()
     end
-	if (watch) then
+    if (watch) then
         watch:stop()
     end
 
@@ -202,6 +217,25 @@ function img_resize(tmp_name, to_name, size_x, size_y)
     return ret_val
 end
 
+function composite(src_f, url, b_img, c_img, gv)
+    local fe = file_exists(src_f)
+    local img, err
+    if fe then
+        img, err = get_tfs_as_img(nil, src_f)
+    else
+        img, err = get_composite_as_image(url, b_img, c_img, gv)
+    end
+    return img, err
+end
+
+function load_image(src)
+    if file_exists(src_f) then
+        return magick.load_image(tfsname)
+    else
+        return nil
+    end
+end
+
 local self = {
     get_tfsname = get_tfsname,
     file_exists = file_exists,
@@ -210,6 +244,9 @@ local self = {
     get_composite_as_image = get_composite_as_image,
     get_tfs_as_file = get_tfs_as_file,
     img_resize = img_resize,
+    get_cache_as_img = get_cache_as_img,
+    composite = composite,
+    load_image = load_image,
     VERSION = VERSION 
 }
 
