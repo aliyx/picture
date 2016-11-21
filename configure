@@ -23,7 +23,7 @@ if [ "X$CPU" == "X0" ]; then
     exit
 fi
 
-network=`cat /proc/net/dev | awk '{if($2>0 && NR > 2) print substr($1, 0, index($1, ":") - 1)}'|head -1`
+network=`ls /sys/class/net | awk -F ' ' '{print $1}' | head -1`
 #inet addr:ip
 if ifconfig |grep $network >/dev/null ;then
     ip_command=`ifconfig $network | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
@@ -46,16 +46,12 @@ if [ "X$HTTP_SERVER" == "X" ]; then
     exit
 fi
 
-# local or sit env
-if [ $1 == "local" -o $1 == "sit" ]; then   
+# local or sit or test env
+if [ $1 == "local" -o $1 == "sit" -o $1 == "test" ]; then   
     TFS_SERVER="10.213.33.177:11100"
     REDIS_SERVER="10.213.33.155:10388"
 fi
-# test
-if [ $1 == "local" -o $1 == "sit" ]; then   
-    TFS_SERVER="10.213.33.177:11100"
-    REDIS_SERVER="10.213.33.155:10388"
-fi
+
 # prod
 if [ $1 == "prod" ]; then
     TFS_SERVER="10.209.18.2:11100"
@@ -121,7 +117,7 @@ if type py3 2>/dev/null; then
 elif type python3 2>/dev/null; then
     py="python3"
 else
-    echo >&2 "Require python but it's not installed."
+    echo >&2 "Require python3 but it's not installed."
 fi
 
 PIC_MAKEFILE=./Makefile

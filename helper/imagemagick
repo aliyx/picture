@@ -1,0 +1,22 @@
+#安装依赖
+yum -y install ImageMagick-devel
+yum -y remove ImageMagick-devel
+#依赖检查
+yum install lbzip2-utils bzip2-devel zlib-devel libtiff-devel freetype-devel libmng-devel openjpeg-devel lcms2-devel libpng-devel libwebp-devel ibwmf-devel libxml2-devel -y
+
+
+./configure --prefix=/usr/ --libdir=/usr/lib64/ --with-wmf
+
+vi /usr/etc/ImageMagick-7/policy.xml
+修改线程数
+<policy domain="resource" name="thread" value="1"/>
+添加策略
+<policy domain="coder" rights="none" pattern="EPHEMERAL" />
+<policy domain="coder" rights="none" pattern="URL" />
+<policy domain="coder" rights="none" pattern="HTTPS" />
+<policy domain="coder" rights="none" pattern="MVG" />
+<policy domain="coder" rights="none" pattern="MSL" />
+<policy domain="coder" rights="none" pattern="TEXT" />
+<policy domain="coder" rights="none" pattern="SHOW" />
+<policy domain="coder" rights="none" pattern="WIN" />
+<policy domain="coder" rights="none" pattern="PLT" />
