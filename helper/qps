@@ -1,0 +1,35 @@
+#!/bin/bash
+
+DATE=`date +%s`
+#LOGFILE=$1
+LOGFILE="/usr/local/tengine/logs/access.log"
+#if [ ! -f "$1" ];then
+#  echo "LOG file did not give or it's not a file"
+#  exit
+#fi 
+sleep_time="5"
+#echo $LOGFILE
+#echo $sleep_time
+
+count_init=`wc -l ${LOGFILE}|awk '{print $1}'`
+while true
+do
+DATE_NEW=`date +%s`
+#DATE_PLUS=$(($DATE_NEW+$sleep_time))
+#echo $DATE_NEW " ____ plus: " $DATE_PLUS
+#  if (( $(date +%s) == $DATE_PLUS))
+#  then
+#  DATE=$(date +%s)
+   count_new=`wc -l ${LOGFILE}|awk '{print $1}'`
+   add_count=$((${count_new}-${count_init}))
+   count_init=${count_new}
+   if [ ! -n "${add_count}" ];then
+     add_count=0
+   fi
+   QPS=$((${add_count}/2/${sleep_time}))
+   echo " Then QPS at `date -d "1970-01-01 UTC ${DATE_NEW} seconds" +"%Y-%m-%d %H:%M:%S"` is "${QPS}
+#  fi
+#  echo " DATE_NEW: " $DATE_NEW " DATE_PLUS :" $DATE_PLUS
+sleep $sleep_time
+done
+  
