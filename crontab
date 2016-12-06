@@ -1,0 +1,5 @@
+#more /etc/crontab
+#crontab -e
+
+1 1 * * 1 /var/wd/wrs/webroot/picture/nginx_log_roll
+1 1 * * * nohup find /usr/local/tfsimage -type f -name "*" -atime +10 -exec rm {} \; >/dev/null 2>&1 &

@@ -1,0 +1,2 @@
+# tengine需要加载的模块
+./configure --prefix=/usr/local/tengine --with-http_lua_module --with-http_lua_module=shared --with-luajit-inc=/usr/local/include/luajit-2.0 --with-luajit-lib=/usr/local/lib --with-http_tfs_module  --add-module=./modules/redis2-nginx-module-0.13  --add-module=./modules/echo-nginx-module-0.60  --add-module=./modules/ngx_http_lua_module  --add-module=./modules/srcache-nginx-module-0.31  --add-module=./modules/ngx_devel_kit-0.3.0  --with-ld-opt=-Wl,-rpath,/usr/local/lib

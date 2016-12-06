@@ -68,11 +68,14 @@ c_img = img.post(c_path)
 
 # get
 urls = []
-#= /tfs/favicon.ico
-#urls.append('/tfs/favicon.ico')
+#~ "^/(.*?)_(\d{1,3})(!|!!)/(.*?)$"
+urls.append('/tfs/norm_100!/' + b_img)
+urls.append('/tfs/norm_100!!/' + b_img)
 
 #~ "^/(.*)/label_(\d+)_(T[^/]{17,50})$"
 urls.append('/tfs/label_1_' + b_img)
+urls.append('/norm_200/label_1_' + b_img)
+urls.append('/norm_m_200/label_1_' + b_img)
 
 #~ "^/(.*)/([^/]*)h00([[:alnum:]_]{30,50})$"
 # ???
@@ -82,6 +85,9 @@ urls.append('/v1/tfs/orig/' + b_img)
 
 #~ "^/v1/tfs"
 urls.append('/v1/tfs/' + b_img)
+
+#~ "^/v2/tfs"
+urls.append('/v2/tfs/' + b_img)
 
 #~ "^/norm_(\d{1,3})/(nw|ne|se|sw|ct),(T[[:alnum:]_\.]{17}),(T[[:alnum:]_\.]{17})"
 urls.append('/norm_200/ct,' + c_img + ',' + b_img)
@@ -99,17 +105,40 @@ urls.append('/tfs/norm_100/' + b_img)
 
 #~ "^/tfs"
 urls.append('/tfs/' + b_img)
+urls.append('/tfs/orig/' + b_img)
 
 #~ "^/norm(_m|)_(\d+)/([[:alnum:]_\.]{18,50})$"
 urls.append('/norm_100/' + b_img)
-urls.append('/norm_m_100/' + b_img)
 
 #/norm_m_(\d{1,3})/(.+)$"
 urls.append('/norm_m_100/' + b_img)
+urls.append('/norm_m_100/label_1/' + b_img)
 
 #~ "^/(norm_\d{1,3}/|orig/|)label_(\d+)/([[:alnum:]_\.]{18,50})$"
 urls.append('/norm_100/label_1/' + b_img)
 urls.append('/orig/label_1/' + b_img)
+
+# i1
+urls.append('/i1/' + b_img)
+
+# i2
+urls.append('/i2/' + b_img + '_200x200')
+urls.append('/i2/' + b_img + '_200x200!')
+urls.append('/i2/' + b_img + '_200x200!!')
+urls.append('/i2/' + b_img + '_200x')
+urls.append('/i2/' + b_img + '_x200')
+urls.append('/i2/' + b_img + '_200x200!!_q70')
+urls.append('/i2/' + b_img + '_200x200!!_q70_.webp')
+
+# i3
+urls.append('/i3/label_1/nw/' + b_img)
+urls.append('/i3/label_1/nw/' + b_img + '_200x200!!_q70_.webp')
+urls.append('/i3/label_1/ct/' + b_img + '_200x200!!_q70_.webp')
+
+# i4
+urls.append('/i4/nw/' + c_img + ',' + b_img)
+urls.append('/i4/nw/' + c_img + ',' + b_img + '_200x200!!_q70_.webp')
+urls.append('/i4/ct/' + c_img + ',' + b_img + '_200x200!!_q70_.webp')
 
 for u in urls:
     img.get(u)

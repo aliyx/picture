@@ -169,12 +169,9 @@ do
       gtype = assert(gravity:to_int(gtype), "invalid gravity type")
       return handle_result(self, lib.MagickCompositeImageGravity(self.wand, blob, op, gtype))
     end,
-    to_webp = function(self, _q, _wp)
-      if _q ~= nil and _q ~= "" then
-        self:set_quality(tonumber(_q))
-      end
-      if _wp ~= nil and _wp ~= "" then
-        self:set_format(_wp)
+    to_webp = function(self, wp)
+      if wp ~= nil and wp ~= "" then
+        self:set_format(wp)
       end
     end,
     transform_colorspace = function(self, ct)

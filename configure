@@ -23,12 +23,13 @@ if [ "X$CPU" == "X0" ]; then
     exit
 fi
 
+network=`ls /sys/class/net | awk -F ' ' '{print $1}' | head -1`
 #inet addr:ip
-if ifconfig |grep eth0 >/dev/null ;then
-    ip_command=`ifconfig eth0 | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
+if ifconfig |grep $network >/dev/null ;then
+    ip_command=`ifconfig $network | grep 'inet addr' | awk '{ print $2}' | awk -F: '{print $2}'`
     HTTP_SERVER=`echo $ip_command`
     if [ -z "$HTTP_SERVER" ]; then
-        ip_command=`ifconfig eth0 | grep 'inet ' | awk '{ print $2}'`
+        ip_command=`ifconfig $network | grep 'inet ' | awk '{ print $2}'`
         HTTP_SERVER=`echo $ip_command`
     fi
 fi
@@ -45,16 +46,12 @@ if [ "X$HTTP_SERVER" == "X" ]; then
     exit
 fi
 
-# local or sit env
-if [ $1 == "local" -o $1 == "sit" ]; then   
+# local or sit or test env
+if [ $1 == "local" -o $1 == "sit" -o $1 == "test" ]; then   
     TFS_SERVER="10.213.33.177:11100"
     REDIS_SERVER="10.213.33.155:10388"
 fi
-# test
-if [ $1 == "local" -o $1 == "sit" ]; then   
-    TFS_SERVER="10.213.33.177:11100"
-    REDIS_SERVER="10.213.33.155:10388"
-fi
+
 # prod
 if [ $1 == "prod" ]; then
     TFS_SERVER="10.209.18.2:11100"
@@ -69,6 +66,17 @@ fi
 echo "Checking for tfs server... $TFS_SERVER"
 echo "Checking for redis server... $REDIS_SERVER"
 echo "Checking for worker processes... $CPU"
+
+echo "Create /usr/local/tfsname/i* folder"
+for((i=1;i<=5;i++)); do
+    dir="/usr/local/tfsimage/i"$i
+    if [ ! -d "$dir" ]; then
+        mkdir -p $dir
+    fi
+    sudo chown nobody $dir
+    sudo chgrp nobody $dir
+    sudo chmod 777 $dir
+done
 
 # set worker_processes
 sed -ri "s/(.*)worker_processes\s+([0-9]+)/\1worker_processes  $CPU/g" nginx.conf
@@ -92,6 +100,7 @@ sed -ri "s/(.*)server_name\s*(([0-9]+\.){3}[0-9]+).*/\1server_name $HTTP_SERVER;
 
 #---------test----------
 sed -ri "s/(.*)IP\s=(.*)/\1IP = '$HTTP_SERVER:10502'/g" tests/img.py
+chmod 755 ./tests/img.py
 
 echo "Starting make ..."
 
@@ -108,7 +117,7 @@ if type py3 2>/dev/null; then
 elif type python3 2>/dev/null; then
     py="python3"
 else
-    echo >&2 "Require python but it's not installed."
+    echo >&2 "Require python3 but it's not installed."
 fi
 
 PIC_MAKEFILE=./Makefile

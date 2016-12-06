@@ -81,25 +81,47 @@ end
 -- added by yangx
 local parse_geometry
 parse_geometry = function(g, _w, _h, _x, _y)
-    local is_g = lib.IsGeometry(g)
-    if (is_g ~= 1) then
-        return nil, "invalid geometry"
-    end
-    if not (_x) then
-        _x = 0
-    end
-    if not (_y) then
-        _y = 0
-    end
-    local x, y, w, h = ffi.new("ssize_t[1]", _x), ffi.new("ssize_t[1]", _y),
-        ffi.new("size_t[1]", _w),ffi.new("size_t[1]", _h)
+  local is_g = lib.IsGeometry(g)
+  if (is_g ~= 1) then
+    return nil, "invalid geometry"
+  end
+  if not (_x) then
+    _x = 0
+  end
+  if not (_y) then
+  _y = 0
+  end
+  local x, y, w, h = ffi.new("ssize_t[1]", _x), ffi.new("ssize_t[1]", _y),
+      ffi.new("size_t[1]", _w),ffi.new("size_t[1]", _h)
 
-    lib.ParseMetaGeometry(g, x, y, w, h)
+  lib.ParseMetaGeometry(g, x, y, w, h)
 
-    return tonumber(w[0]), tonumber(h[0]), tonumber(x[0]), tonumber(y[0])
+  return tonumber(w[0]), tonumber(h[0]), tonumber(x[0]), tonumber(y[0])
 end
+
+local resize
+resize = function (img, w, h, r)
+  if w == nil or w == '' or h == nil or h == '' then
+    r = ''
+  end
+  if r ~= nil and r == "!!" then
+    img:resize_and_crop(tonumber(w), tonumber(h))
+  end
+  local size_str = w .. "x" .. h .. r
+  local src_w, src_h = img:get_width(), img:get_height()
+  local opts = parse_size_str(size_str, src_w, src_h)
+  if opts.center_crop then
+    img:resize_and_crop(opts.w, opts.h)
+  elseif opts.crop_x then
+    img:crop(opts.w, opts.h, opts.crop_x, opts.crop_y)
+  else
+    img:resize(opts.w, opts.h)
+  end
+end
+
 return {
   parse_size_str = parse_size_str,
   make_thumb = make_thumb,
-  parse_geometry = parse_geometry
+  parse_geometry = parse_geometry,
+  resize = resize
 }
