@@ -68,7 +68,7 @@ echo "Checking for redis server... $REDIS_SERVER"
 echo "Checking for worker processes... $CPU"
 
 echo "Create /usr/local/tfsname/i* folder"
-for((i=1;i<=4;i++)); do
+for((i=1;i<=5;i++)); do
     dir="/usr/local/tfsimage/i"$i
     if [ ! -d "$dir" ]; then
         mkdir -p $dir
