@@ -1,2 +1,29 @@
+##############################1 安装luajit
+
+##############################2 在/etc/profile.d/magick.sh中设置环境变量
+unset PKG_CONFIG_PATH
+if [ -z ${PKG_CONFIG_PATH} ];then
+  export PKG_CONFIG_PATH=/usr/lib/pkgconfig:$PKG_CONFIG_PATH
+fi
+
+unset LD_LIBRARY_PATH
+if [ -z ${LD_LIBRARY_PATH} ];then
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib
+fi
+
+export PATH=$PATH:/usr/local/bin
+
+##############################3 安装依赖
+yum install pcre-devel openssl-devel yajl-devel cmake -y
+
+##############################4 源码安装yajl
+
+##############################5 源码安装tengine
 # tengine需要加载的模块
 ./configure --prefix=/usr/local/tengine --with-http_lua_module --with-http_lua_module=shared --with-luajit-inc=/usr/local/include/luajit-2.0 --with-luajit-lib=/usr/local/lib --with-http_tfs_module  --add-module=./modules/redis2-nginx-module-0.13  --add-module=./modules/echo-nginx-module-0.60  --add-module=./modules/ngx_http_lua_module  --add-module=./modules/srcache-nginx-module-0.31  --add-module=./modules/ngx_devel_kit-0.3.0  --with-ld-opt=-Wl,-rpath,/usr/local/lib
+
+##############################6 lua json依赖包
+上传cjson.so /usr/local/lib/lua/5.1/
+
+##############################6 创建项目code存放目录
+mkdir -p /var/wd/wrs/webroot

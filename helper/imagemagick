@@ -1,16 +1,21 @@
-#安装依赖
-yum -y install ImageMagick-devel
-yum -y remove ImageMagick-devel
-#依赖检查
-yum install lbzip2-utils bzip2-devel zlib-devel libtiff-devel freetype-devel libmng-devel openjpeg-devel lcms2-devel libpng-devel libwebp-devel ibwmf-devel libxml2-devel -y
+##############################1 移除old
+yum -y remove ImageMagick
 
+##############################2 添加图片处理依赖
+yum install lbzip2-utils bzip2 zlib libtiff freetype libmng openjpeg lcms2 libpng libwebp ibwmf libxml2 -y
 
-./configure --prefix=/usr/ --libdir=/usr/lib64/ --with-wmf
+##############################3 magick安装
+yum -y install ImageMagick
 
+##############################4 pkg-config会在lib64下查找*.pc文件 
+ln -s /usr/lib/pkgconfig/MagickWand.pc /usr/lib64/pkgconfig/MagickWand.pc
+ln -s /usr/lib/pkgconfig/MagickCore.pc /usr/lib64/pkgconfig/MagickCore.pc
+
+##############################5 修改imageMagick策略
 vi /usr/etc/ImageMagick-7/policy.xml
-修改线程数
-<policy domain="resource" name="thread" value="1"/>
-添加策略
+# 修改线程数
+<policy domain="resource" name="thread" value="1"/> 
+# 添加防止漏洞策略
 <policy domain="coder" rights="none" pattern="EPHEMERAL" />
 <policy domain="coder" rights="none" pattern="URL" />
 <policy domain="coder" rights="none" pattern="HTTPS" />

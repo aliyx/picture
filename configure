@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ "X$1" != "Xlocal" -a "X$1" != "Xtest" -a "X$1" != "Xsit" -a "X$1" != "Xprod" ]; then
-    echo "Please select env: local test sit prod"
+if [ "X$1" != "Xlocal" -a "X$1" != "Xtest" -a "X$1" != "Xsit" -a "X$1" != "Xuat" -a "X$1" != "Xprod" ]; then
+    echo "Please select env: local test sit uat prod"
     echo "Such as ./configure sit"
     exit
 fi
@@ -49,6 +49,12 @@ fi
 # local or sit or test env
 if [ $1 == "local" -o $1 == "sit" -o $1 == "test" ]; then   
     TFS_SERVER="10.213.33.177:11100"
+    REDIS_SERVER="10.213.33.155:10388"
+fi
+
+# uat
+if [ $1 == "uat" ]; then
+    TFS_SERVER="10.213.129.75:11100"
     REDIS_SERVER="10.213.33.155:10388"
 fi
 

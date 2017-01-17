@@ -1,2 +1,2 @@
 #!/bin/bash
-nohup /opt/logstash/bin/logstash -w 2 -r -f agent.conf &
+nohup /opt/logstash/bin/logstash -w 2 -f agent.conf &
