@@ -6,4 +6,4 @@ Note: **可以忽略项目中的redis**
 
 ##  图片访问规则
 
-![规则](https://github.com/aliyx/picture/blob/master/docs/path.svg)
+![规则](docs/path.svg)
