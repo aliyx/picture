@@ -4,4 +4,4 @@
 
 #  图片访问规则
 
-![](docs/path.svg)
+![](https://github.com/aliyx/picture/blob/master/docs/path.svg)
