@@ -28,45 +28,45 @@ make install && make run
 
 ### 图片格式转换
 
-格式为`_.{webp|jpg|png}`
-比如: 
-img.picture.com:10500/tfs/i1/T10FbTB4hT1RCvBVdK_.webp
+格式为`_.{webp|jpg|png}`  
+比如:  
+img.picture.com:10500/tfs/i1/T10FbTB4hT1RCvBVdK_.webp  
 img.picture.com:10500/tfs/i2/T10FbTB4hT1RCvBVdK_200x_.webp
 
 ### 图片压缩
 
-格式为`_q{quantity}`
-比如: 
+格式为`_q{quantity}`  
+比如:  
 img.picture.com:10500/tfs/i1/T10FbTB4hT1RCvBVdK_.webp_q70
 
 ### 图片缩放/裁剪
 
-`%d`的区间是[100,999}
-格式为:
-`%dx%d` 缩放图片,宽和高不超过指定的值,保持原图的宽高比
-`%dx%d!` 缩放图片到指定的宽和高,忽略原图的宽高比
-`%dx%d!!` 裁剪,保持原图宽高比
-`%dx` 定宽
-`x%d` 定高
+`%d`的区间是[100,999}  
+格式为:  
+`%dx%d` 缩放图片,宽和高不超过指定的值,保持原图的宽高比  
+`%dx%d!` 缩放图片到指定的宽和高,忽略原图的宽高比  
+`%dx%d!!` 裁剪,保持原图宽高比  
+`%dx` 定宽  
+`x%d` 定高  
 
-比如: 
-img.picture.com:10500/tfs/i2/T10FbTB4hT1RCvBVdK_300x300
+比如:  
+img.picture.com:10500/tfs/i2/T10FbTB4hT1RCvBVdK_300x300  
 img.picture.com:10500/tfs/i2/T10FbTB4hT1RCvBVdK_300x_q70_.webp
 
 ### 打标
 
-比如:
-img.picture.com:10500/tfs/i3/label_1/T10FbTB4hT1RCvBVdK_300x_q70_.webp
+比如:  
+img.picture.com:10500/tfs/i3/label_1/T10FbTB4hT1RCvBVdK_300x_q70_.webp  
 label_1替换label_1为自己的label_?即可
 
 ### 合成
 
-位置
-`nw` 西北
-`ne` 东北
-`sw` 西南
-`se` 东南
-`ct` 居中
+位置  
+`nw` 西北  
+`ne` 东北  
+`sw` 西南  
+`se` 东南  
+`ct` 居中  
 
-比如:
+比如:  
 img.picture.com:10500/tfs/i3/nw/T10FbTB4hT1RCvBVdK,T1XtETByZT1RCvBVdK_300x_q70_.webp
