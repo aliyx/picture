@@ -4,7 +4,13 @@
 
 Note: **可以忽略项目中的redis**
 
-##  访问规则
+## 部署
+
+```bash
+./configure local/test/sit/prod
+make install
+```
+
+## 访问规则
 
 ![规则](docs/path.png)
-
