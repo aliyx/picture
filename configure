@@ -147,7 +147,10 @@ install : nginx.conf
 	install -c -m 644 nginx.conf ${TENGINE_CONF}/
 	install -c -m 644 nginx_log_roll.sh ${TENGINE_CONF}/
 	# crontab -u root crontab
-
+    
+run : 
+    usr/local/tengine/sbin/nginx -s reload
+    
 nginx.conf :
 
 test : tests/b.jpg tests/c.png tests/img.py
