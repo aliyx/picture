@@ -1,6 +1,6 @@
 # Picture
 
-一个基于nginx+lua+magic的图片处理服务,后端存储采用淘宝的tfs文件系统,目前应用于ffan公司.支持压缩/裁剪/合成,本地cache等基本功能,支持的图片格式为`jpg|jpeg|gif|png`.
+一个基于Tengine+Lua+ImageMagic的图片处理服务,后端存储采用淘宝的tfs文件系统,目前应用于ffan公司.支持压缩/裁剪/合成,本地cache等基本功能,支持的图片格式为`jpg|jpeg|gif|png`.
 
 Note: **可以忽略项目中的redis**
 
@@ -17,12 +17,12 @@ make install && make run
 
 ## 访问规则
 
-通过Path来区分图片的功能:
-* i1 存放原图
-* i2 存放缩放/裁剪之后的图片
-* i3 存储打标的图片
-* i4 存储合成的图片
-* i5 用于支持断点续传
+通过Path来区分图片的功能:  
+* i1 存放原图  
+* i2 存放缩放/裁剪之后的图片  
+* i3 存储打标的图片  
+* i4 存储合成的图片  
+* i5 用于支持断点续传  
 
 以T10FbTB4hT1RCvBVdK图片为例.
 
