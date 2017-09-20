@@ -134,7 +134,7 @@ else
 fi
 
 PIC_MAKEFILE=./Makefile
-TENGINE_CONF=usr/local/tengine/conf
+TENGINE_CONF=/usr/local/tengine/conf
 
 echo "creating $PIC_MAKEFILE"
 cat << END                                                     > $PIC_MAKEFILE
@@ -146,7 +146,7 @@ install : nginx.conf
 	mv ${TENGINE_CONF}/nginx.conf  ${TENGINE_CONF}/nginx.bak
 	install -c -m 644 nginx.conf ${TENGINE_CONF}/
 	install -c -m 644 nginx_log_roll.sh ${TENGINE_CONF}/
-	crontab -u root crontab
+	# crontab -u root crontab
 
 nginx.conf :
 

@@ -1,3 +1,5 @@
+# crontab -l
+# crontab -e
 1 1 * * 1 /usr/local/tengine/conf/nginx_log_roll.sh
 1 1 * * 1 nohup find /usr/local/tengine/logs/ -type f -name "*" -ctime +30 -exec rm {} \; >/dev/null 2>&1 &
 1 1 * * * nohup find /usr/local/tfsimage -type f -name "*" -atime +10 -exec rm {} \; >/dev/null 2>&1 &

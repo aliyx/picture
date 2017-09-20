@@ -31,6 +31,12 @@ function path_src(dir, f)
     return string.format('/%s/%s', dir, f)
 end
 
+function path_src2(dir, f, fmt)
+    local _fmt = toFmt(fmt)
+    local _dest = string.format("/%s/%s%s", dir, tfsname, _fmt)
+    return _dest
+end
+
 function isNil(s)
     return s == nil or s == ""
 end
@@ -120,6 +126,7 @@ local self = {
     make_dir = make_dir,
     isNil = isNil,
     path_src = path_src,
+    path_src2 = path_src2,
     path_comp = path_comp,
     path_zoom = path_zoom,
     VERSION = VERSION 
