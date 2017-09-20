@@ -31,10 +31,9 @@ function path_src(dir, f)
     return string.format('/%s/%s', dir, f)
 end
 
-function path_src2(dir, f, fmt)
-    local _fmt = toFmt(fmt)
-    local _dest = string.format("/%s/%s%s", dir, f, _fmt)
-    return _dest
+function path_src2(dir, f, fmt, q)
+    local _q, _fmt = toQ(q), toFmt(fmt)
+    return string.format("/%s/%s%s%s", dir, f, _q, _fmt)
 end
 
 function isNil(s)
