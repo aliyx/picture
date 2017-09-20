@@ -149,8 +149,8 @@ install : nginx.conf
 	# crontab -u root crontab
     
 run : 
-    usr/local/tengine/sbin/nginx -s reload
-    
+	/usr/local/tengine/sbin/nginx -s reload
+
 nginx.conf :
 
 test : tests/b.jpg tests/c.png tests/img.py
