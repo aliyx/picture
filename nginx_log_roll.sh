@@ -1,4 +1,5 @@
 #!/bin/bash
+
 logs_path="/usr/local/tengine/logs/"
 access="access"   
 error="error"

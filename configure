@@ -1,4 +1,11 @@
 #!/bin/bash
+
+root=$(id -u)
+if [ "$root" -ne 0 ]; then
+	echo must run as root
+	exit 1
+fi
+
 if [ "X$1" != "Xlocal" -a "X$1" != "Xtest" -a "X$1" != "Xsit" -a "X$1" != "Xuat" -a "X$1" != "Xprod" ]; then
     echo "Please select env: local test sit uat prod"
     echo "Such as ./configure sit"
@@ -69,9 +76,9 @@ if [ -z "$TFS_SERVER" -o -z "$REDIS_SERVER" ]; then
     exit
 fi
 
-echo "Checking for tfs server... $TFS_SERVER"
-echo "Checking for redis server... $REDIS_SERVER"
-echo "Checking for worker processes... $CPU"
+echo "Checking tfs server... $TFS_SERVER"
+echo "Checking redis server... $REDIS_SERVER"
+echo "Checking worker process count... $CPU"
 
 echo "Create /usr/local/tfsname/i* folder"
 for((i=1;i<=5;i++)); do
@@ -131,14 +138,16 @@ PIC_MAKEFILE=./Makefile
 echo "creating $PIC_MAKEFILE"
 cat << END                                                     > $PIC_MAKEFILE
 
+TENGINE_CONF=usr/local/tengine/conf
+
 all :
 	@echo "Please input make install..."
 
 install : nginx.conf
-	mv /usr/local/tengine/conf/nginx.conf  /usr/local/tengine/conf/nginx.bak
-	install -c -m 644 nginx.conf /usr/local/tengine/conf/
-	chmod 755 ./tests/img.py
-	chmod 755 ./nginx_log_roll
+	mv $(TENGINE_CONF)/nginx.conf  $(TENGINE_CONF)/nginx.bak
+	install -c -m 644 nginx.conf $(TENGINE_CONF)/
+    install -c -m 644 nginx_log_roll.sh $(TENGINE_CONF)/
+    crontab -u root crontab
 
 nginx.conf :
 
@@ -152,7 +161,7 @@ tests/c.png :
 tests/img.py :
 
 clean :
-	mv /usr/local/tengine/conf/nginx.bak /usr/local/tengine/conf/nginx.conf
+	mv $(TENGINE_CONF)/nginx.bak $(TENGINE_CONF)/nginx.conf
 
 .PHONY: all install test clean
 
