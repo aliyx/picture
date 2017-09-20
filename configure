@@ -134,20 +134,19 @@ else
 fi
 
 PIC_MAKEFILE=./Makefile
+TENGINE_CONF=usr/local/tengine/conf
 
 echo "creating $PIC_MAKEFILE"
 cat << END                                                     > $PIC_MAKEFILE
-
-TENGINE_CONF=usr/local/tengine/conf
 
 all :
 	@echo "Please input make install..."
 
 install : nginx.conf
-	mv $(TENGINE_CONF)/nginx.conf  $(TENGINE_CONF)/nginx.bak
-	install -c -m 644 nginx.conf $(TENGINE_CONF)/
-    install -c -m 644 nginx_log_roll.sh $(TENGINE_CONF)/
-    crontab -u root crontab
+	mv ${TENGINE_CONF}/nginx.conf  ${TENGINE_CONF}/nginx.bak
+	install -c -m 644 nginx.conf ${TENGINE_CONF}/
+	install -c -m 644 nginx_log_roll.sh ${TENGINE_CONF}/
+	crontab -u root crontab
 
 nginx.conf :
 
@@ -161,7 +160,7 @@ tests/c.png :
 tests/img.py :
 
 clean :
-	mv $(TENGINE_CONF)/nginx.bak $(TENGINE_CONF)/nginx.conf
+	mv ${TENGINE_CONF}/nginx.bak ${TENGINE_CONF}/nginx.conf
 
 .PHONY: all install test clean
 
