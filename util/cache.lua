@@ -33,7 +33,7 @@ end
 
 function path_src2(dir, f, fmt)
     local _fmt = toFmt(fmt)
-    local _dest = string.format("/%s/%s%s", dir, tfsname, _fmt)
+    local _dest = string.format("/%s/%s%s", dir, f, _fmt)
     return _dest
 end
 
