@@ -70,3 +70,8 @@ label_1替换label_1为自己的label_?即可
 
 比如:  
 img.picture.com:10500/tfs/i3/nw/T10FbTB4hT1RCvBVdK,T1XtETByZT1RCvBVdK_300x_q70_.webp
+
+## Acknowledgments
+
+- Thanks [lua-resty-http](https://github.com/liseen/lua-resty-http).
+- Thanks [magick](https://github.com/leafo/magick), [ImageMagick](https://github.com/ImageMagick/ImageMagick).
