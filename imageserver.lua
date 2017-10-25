@@ -88,6 +88,9 @@ function get_tfs_as_img(tfsurl, tfsname, watch)
         end
         local blob, err = get_tfs_as_blob(tfsurl .. "/", tfsname)
         if not (blob) then
+            if not err then
+                err = ""
+            end
             return nil, "can't get image[" .. tfsname .. 
                 "] from tfs, Caused by: " .. err
         end
