@@ -22,8 +22,6 @@ local TFS_TIMEOUT = 10000
 
 local CACHE_SRC = "/usr/local/tfsimage/i1/"
 
-local hc = http.new()
-
 function get_tfsname(h00_name)
     local res = ngx.location.capture("/get?key=" .. h00_name)
     local tfs_key = nil
@@ -53,6 +51,7 @@ end
 
 function get_tfs_as_blob(tfsurl, tfsname)
     -- default keepalive for tfs
+    local hc = http.new()
     local ok, code, headers, status, body  = hc:request { 
             url = tfsurl .. tfsname, keepalive = TFS_KEEPALIVE_TIMEOUT, timeout = TFS_TIMEOUT}
     if code ~= ngx.HTTP_OK then
