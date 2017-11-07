@@ -193,7 +193,7 @@ do
         return "image/" .. f
       elseif f:match("json") or f:match("pdf") then
         return "application/" .. f
-      elseif f:match("svg") or f:match("mvg") then
+      elseif f:match("svg") then
         return "image/svg+xml"
       else
         return nil
